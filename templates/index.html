@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WorkMate AI</title>
+<style>
+:root{
+  --nav:#0c1737;
+  --nav2:#14285a;
+  --bg:#f4f7fc;
+  --panel:#ffffff;
+  --panel2:#f8faff;
+  --text:#111a35;
+  --muted:#6f7b99;
+  --line:#e4e9f3;
+  --blue:#3968ff;
+  --indigo:#6456f5;
+  --cyan:#54b8ff;
+  --success:#1fa76c;
+  --warning:#e99a19;
+  --danger:#df4b5c;
+  --shadow:0 18px 46px rgba(30,54,112,.09);
+  --radius:20px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 88% 3%,rgba(103,155,255,.22),transparent 23%),
+    radial-gradient(circle at 18% 100%,rgba(109,89,255,.10),transparent 25%),
+    var(--bg);
+  color:var(--text);
+}
+button,input,textarea,select{font:inherit}
+button{user-select:none}
+.shell{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}
+.sidebar{
+  height:100vh;position:sticky;top:0;padding:25px 18px;
+  background:linear-gradient(180deg,var(--nav),#101f48);
+  color:#fff;overflow:hidden;
+}
+.brand{display:flex;align-items:center;gap:12px;font-size:21px;font-weight:800;margin-bottom:34px}
+.brandmark{
+  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#85a9ff,var(--blue),var(--indigo));
+  box-shadow:0 10px 25px rgba(72,91,255,.35);font-size:22px;font-weight:900
+}
+.nav{display:flex;flex-direction:column;gap:5px}
+.nav button{
+  width:100%;height:46px;border:0;border-radius:13px;padding:0 14px;
+  display:flex;align-items:center;gap:13px;background:transparent;color:#ced8f3;
+  cursor:pointer;text-align:left;font-weight:600
+}
+.nav button:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav button.active{
+  background:linear-gradient(135deg,rgba(63,102,255,.9),rgba(97,77,229,.9));
+  color:#fff;box-shadow:0 10px 28px rgba(41,62,166,.28)
+}
+.navicon{width:22px;text-align:center;font-size:17px}
+.side-status{
+  position:absolute;left:18px;right:18px;bottom:22px;padding-top:17px;
+  border-top:1px solid rgba(255,255,255,.13);font-size:12px;color:#afbddc
+}
+.side-user{font-size:14px;color:#fff;font-weight:700;margin-bottom:9px}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:99px;background:#7d8ba9;margin-right:7px}
+.live-dot.on{background:#48d292;box-shadow:0 0 0 4px rgba(72,210,146,.13)}
+
+.main{max-width:1540px;width:100%;padding:28px 34px 45px;margin:auto}
+.section{display:none}.section.active{display:block}
+.topbar{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:23px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:800}
+h1{font-size:31px;margin:5px 0 0;letter-spacing:-.03em}
+.subtitle{margin:6px 0 0;color:var(--muted)}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+.btn{
+  border:0;border-radius:12px;padding:11px 15px;font-weight:750;cursor:pointer;
+  transition:.15s ease;display:inline-flex;align-items:center;justify-content:center;gap:7px
+}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{color:#fff;background:linear-gradient(135deg,var(--blue),var(--indigo));box-shadow:0 9px 22px rgba(72,91,255,.20)}
+.btn.secondary{background:#fff;border:1px solid var(--line);color:var(--text)}
+.btn.ghost{background:#eef3ff;color:#3153b8}
+.btn.danger{background:#fff0f2;color:#b72d3d}
+.btn.small{padding:8px 11px;font-size:12px}
+
+.card{
+  background:rgba(255,255,255,.95);border:1px solid rgba(226,232,244,.95);
+  border-radius:var(--radius);box-shadow:var(--shadow)
+}
+.panel{padding:21px}
+.panel-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
+.panel-title h2{font-size:17px;margin:0}
+.muted{color:var(--muted)}
+.smalltext{font-size:12px;color:var(--muted)}
+
+.hero{
+  min-height:250px;padding:28px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(320px,.7fr);
+  gap:25px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 90% 20%,rgba(84,184,255,.20),transparent 29%),
+    linear-gradient(135deg,#fff,#f7f9ff)
+}
+.hero:after{
+  content:"W";position:absolute;right:-35px;bottom:-95px;font-weight:900;
+  font-size:320px;color:rgba(70,97,210,.035);pointer-events:none
+}
+.hero h2{font-size:38px;letter-spacing:-.04em;margin:7px 0 10px}
+.hero h2 span{background:linear-gradient(100deg,var(--blue),var(--indigo));-webkit-background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:15px;max-width:650px;line-height:1.55}
+.askbar{
+  display:flex;gap:8px;background:#fff;border:1px solid #dce4f4;padding:7px;border-radius:16px;
+  box-shadow:0 13px 35px rgba(45,77,146,.10);margin-top:23px;position:relative;z-index:1
+}
+.askbar input{flex:1;border:0;outline:0;padding:8px 10px;font-size:14px;background:transparent}
+.hero-status{display:grid;gap:12px;position:relative;z-index:1;align-content:center}
+.status-card{background:rgba(255,255,255,.88);border:1px solid #e3e9f5;border-radius:16px;padding:15px}
+.status-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.status-name{display:flex;align-items:center;gap:9px;font-weight:800}
+.status-orb{width:10px;height:10px;border-radius:50%;background:#a5afc5}
+.status-orb.on{background:var(--success);box-shadow:0 0 0 5px rgba(31,167,108,.10)}
+.status-sub{margin-top:7px;font-size:12px;color:var(--muted)}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:18px}
+.kpi{padding:18px;min-height:126px;position:relative;overflow:hidden}
+.kpi-label{font-size:12px;color:var(--muted);font-weight:700}
+.kpi-value{font-size:34px;font-weight:850;margin-top:11px;letter-spacing:-.04em}
+.kpi-foot{font-size:11px;color:var(--muted);margin-top:7px}
+.kpi-icon{
+  position:absolute;right:16px;top:16px;width:35px;height:35px;border-radius:11px;
+  display:grid;place-items:center;background:#eef3ff;color:var(--blue);font-size:16px
+}
+
+.home-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);gap:18px;margin-top:18px}
+.mail-list,.stack{display:flex;flex-direction:column;gap:10px}
+.mail{
+  padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;
+  transition:.15s ease
+}
+.mail:hover{border-color:#b8c7ee;box-shadow:0 7px 18px rgba(45,77,146,.07)}
+.row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.mail b{font-size:13px}.mail small{font-size:11px;color:var(--muted)}
+.snippet{font-size:12px;color:#586583;margin-top:6px;line-height:1.42}
+.badge{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:800;white-space:nowrap}
+.badge.warn{background:#fff4de;color:#9b6003}
+.badge.ok{background:#eaf8f2;color:#17754e}
+.badge.danger{background:#ffeaee;color:#b32d3d}
+.badge.info{background:#edf2ff;color:#3655bd}
+
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.quick{
+  border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 10px;
+  cursor:pointer;text-align:center;font-weight:750;font-size:12px;transition:.15s ease
+}
+.quick:hover{transform:translateY(-2px);border-color:#aec1ff;background:#fbfcff}
+.quick-icon{display:block;font-size:20px;margin-bottom:7px}
+.alertbox{padding:11px 12px;border:1px solid var(--line);border-left:4px solid #9badc9;border-radius:12px;background:#fff;margin-bottom:9px;font-size:12px}
+.alertbox.success{border-left-color:var(--success)}
+.alertbox.warning{border-left-color:var(--warning)}
+.alertbox.danger{border-left-color:var(--danger)}
+
+.two-col{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(330px,.75fr);gap:18px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+label{font-size:12px;color:#4d5977;font-weight:750;display:block;margin:0 0 6px}
+input,textarea,select{
+  width:100%;border:1px solid #dbe3f1;background:#fff;border-radius:12px;padding:11px 12px;
+  outline:none;color:var(--text)
+}
+input:focus,textarea:focus,select:focus{border-color:#88a5ff;box-shadow:0 0 0 3px rgba(57,104,255,.08)}
+textarea{min-height:118px;resize:vertical}
+
+.pbi-shell{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(330px,.55fr);gap:18px}
+.connection-banner{
+  border:1px dashed #cbd6ec;border-radius:15px;padding:13px;background:#f9fbff;
+  display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:15px
+}
+.conn-left{display:flex;gap:10px;align-items:center}
+.conn-icon{width:35px;height:35px;border-radius:11px;background:#fff1d9;display:grid;place-items:center;font-weight:900;color:#c77a00}
+.conn-title{font-size:13px;font-weight:800}
+.conn-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.question-box{
+  border:1px solid #dfe6f2;border-radius:17px;padding:13px;background:linear-gradient(180deg,#fff,#fbfcff)
+}
+.question-box textarea{border:0;background:transparent;min-height:105px;padding:5px;box-shadow:none}
+.question-actions{display:flex;justify-content:space-between;gap:10px;align-items:center;border-top:1px solid #edf0f6;padding-top:10px}
+.suggestions{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 0}
+.chip{
+  border:1px solid #dfe6f5;background:#f9fbff;color:#41516f;border-radius:999px;
+  padding:7px 10px;font-size:11px;cursor:pointer
+}
+.chip:hover{border-color:#a9bbf5;background:#f0f4ff;color:#294aa8}
+.answer{
+  margin-top:16px;border-radius:15px;padding:14px;background:#f7f9fd;border:1px solid #e4e9f3;
+  min-height:58px;white-space:pre-wrap;font-size:13px;line-height:1.55
+}
+.answer.empty{color:var(--muted);display:flex;align-items:center}
+.model-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.mini-stat{padding:12px;border-radius:13px;background:#f8faff;border:1px solid #e7ecf6}
+.mini-stat strong{display:block;font-size:23px;margin-top:6px}
+.model-list{max-height:310px;overflow:auto;margin-top:12px;border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcff}
+.model-group{margin-bottom:13px}
+.model-group-title{font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.08em;color:#7a86a3;margin-bottom:6px}
+.model-pill{display:inline-block;padding:5px 7px;background:#fff;border:1px solid #e1e7f2;border-radius:8px;margin:3px;font-size:10px;color:#45516b}
+
+.tablewrap{overflow:auto;max-height:430px;border:1px solid var(--line);border-radius:13px;margin-top:12px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:11px}
+th,td{padding:9px 10px;border-bottom:1px solid #edf0f5;text-align:left;white-space:nowrap}
+th{position:sticky;top:0;background:#f4f7fb;z-index:1;color:#47536d}
+
+.chatbox{height:560px;display:flex;flex-direction:column}
+.chathead{padding-bottom:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.chatlog{flex:1;overflow:auto;padding:16px 2px}
+.msg{max-width:80%;padding:11px 13px;border-radius:15px;margin:8px 0;font-size:13px;line-height:1.45}
+.msg.user{margin-left:auto;background:linear-gradient(135deg,#dfe9ff,#eae5ff)}
+.msg.assistant{background:#f7f9fd;border:1px solid #e3e8f2}
+.chat-input{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.chat-input input{flex:1}
+
+details{border-top:1px solid var(--line);padding-top:13px;margin-top:15px}
+summary{cursor:pointer;font-size:12px;font-weight:800;color:#4c5975}
+
+.toast{
+  position:fixed;right:22px;bottom:22px;max-width:390px;padding:13px 15px;border-radius:13px;
+  background:#111c39;color:#fff;box-shadow:0 18px 45px rgba(0,0,0,.20);
+  transform:translateY(20px);opacity:0;pointer-events:none;transition:.2s;z-index:50;font-size:12px
+}
+.toast.show{transform:translateY(0);opacity:1}
+.busy-overlay{
+  position:fixed;inset:0;background:rgba(244,247,252,.55);backdrop-filter:blur(2px);
+  display:none;place-items:center;z-index:60
+}
+.busy-overlay.show{display:grid}
+.loader{
+  width:45px;height:45px;border:4px solid #dbe3f3;border-top-color:var(--blue);
+  border-radius:50%;animation:spin .8s linear infinite
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:1100px){
+  .shell{grid-template-columns:88px minmax(0,1fr)}
+  .brand span,.nav button span,.side-status{display:none}
+  .sidebar{padding:22px 12px}.nav button{justify-content:center;padding:0}
+  .hero,.home-grid,.two-col,.pbi-shell{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr 1fr}
+}
+@media(max-width:680px){
+  .main{padding:17px}.kpis{grid-template-columns:1fr}
+  .topbar{flex-direction:column;align-items:flex-start}
+  .hero{padding:20px}.hero h2{font-size:31px}.hero-status{display:none}
+  .form-grid{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr 1fr}
+  .model-stats{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">W</div><span>WorkMate AI</span></div>
+    <div class="nav">
+      <button class="active" data-section="home"><span class="navicon">⌂</span><span>Home</span></button>
+      <button data-section="email"><span class="navicon">✉</span><span>Email</span></button>
+      <button data-section="tools"><span class="navicon">▦</span><span>Strumenti</span></button>
+      <button data-section="powerbi"><span class="navicon">▥</span><span>Power BI</span></button>
+      <button data-section="assistant"><span class="navicon">✦</span><span>Assistente</span></button>
+      <button data-section="settings"><span class="navicon">⚙</span><span>Impostazioni</span></button>
+    </div>
+    <div class="side-status">
+      <div class="side-user">Buon lavoro, {{ config.user_name }}</div>
+      <div><span id="sidePbiDot" class="live-dot"></span><span id="sidePbiText">Power BI non collegato</span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- HOME -->
+    <section id="home" class="section active">
+      <div class="topbar">
+        <div>
+          <div class="eyebrow">Il tuo assistente operativo</div>
+          <h1>La tua mattina, già organizzata.</h1>
+          <p class="subtitle">Email, priorità, strumenti e dati in un unico posto.</p>
+        </div>
+        <div class="actions">
+          <button class="btn secondary" onclick="notifyMe()">🔔 Notifiche</button>
+          <button class="btn primary" onclick="refreshMails()">↻ Aggiorna Morning Brief</button>
+        </div>
+      </div>
+
+      <div class="card hero">
+        <div>
+          <div class="eyebrow">WORKMATE AI</div>
+          <h2>Ciao {{ config.user_name }}, <span>cosa facciamo oggi?</span></h2>
+          <p>
+            Posso controllare Outlook, individuare le email importanti, aprire i programmi,
+            preparare messaggi e interrogare <b>YourReport</b>.
+          </p>
+          <div class="askbar">
+            <input id="homeAsk" placeholder="Es. quanti ODL devo ancora eseguire?" onkeydown="if(event.key==='Enter') askFromHome()">
+            <button class="btn primary" onclick="askFromHome()">Chiedi a WorkMate →</button>
+          </div>
+        </div>
+        <div class="hero-status">
+          <div class="status-card">
+            <div class="status-top">
+              <div class="status-name"><span id="homeMailOrb" class="status-orb"></span>Outlook</div>
+              <span id="homeMailStatus" class="badge info">In attesa</span>
+            </div>
+            <div id="homeMailSub" class="status-sub">Morning Brief non ancora aggiornato.</div>
+          </div>
+          <div class="status-card">
+            <div class="status-top">
+              <div class="status-name"><span id="homePbiOrb" class="status-orb"></span>Power BI</div>
+              <span id="homePbiStatus" class="badge info">Non collegato</span>
+            </div>
+            <div id="homePbiSub" class="status-sub">YourReport</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpis">
+        <div class="card kpi">
+          <span class="kpi-icon">✉</span>
+          <div class="kpi-label">Email nel periodo</div>
+          <div id="kTotal" class="kpi-value">—</div>
+          <div class="kpi-foot">Ultimo controllo: <span id="lastCheck">mai</span></div>
+        </div>
+        <div class="card kpi">
+          <span class="kpi-icon">●</span>
+          <div class="kpi-label">Non lette</div>
+          <div id="kUnread" class="kpi-value">—</div>
+          <div class="kpi-foot">Messaggi ancora da verificare</div>
+        </div>
+        <div class="card kpi">
+          <span class="kpi-icon">!</span>
+          <div class="kpi-label">Prioritarie</div>
+          <div id="kPriority" class="kpi-value">—</div>
+          <div class="kpi-foot">Individuate da WorkMate</div>
+        </div>
+        <div class="card kpi">
+          <span class="kpi-icon">🔔</span>
+          <div class="kpi-label">Alert attivi</div>
+          <div id="kAlerts" class="kpi-value">0</div>
+          <div class="kpi-foot">Scadenze e segnalazioni</div>
+        </div>
+      </div>
+
+      <div class="home-grid">
+        <div class="card panel">
+          <div class="panel-title">
+            <div><h2>Morning Brief</h2><div class="smalltext">Le email che meritano attenzione.</div></div>
+            <button class="btn ghost small" onclick="showSection('email')">Vedi tutte →</button>
+          </div>
+          <div id="briefText" class="muted" style="font-size:13px;margin-bottom:13px">Sto preparando il tuo riepilogo...</div>
+          <div id="priorityList" class="mail-list"></div>
+        </div>
+
+        <div class="stack">
+          <div class="card panel">
+            <div class="panel-title"><h2>Strumenti rapidi</h2></div>
+            <div class="quick-grid">
+              <button class="quick" onclick="openProgram('outlook')"><span class="quick-icon">✉</span>Outlook</button>
+              <button class="quick" onclick="openProgram('excel')"><span class="quick-icon">▦</span>Excel</button>
+              <button class="quick" onclick="openProgram('word')"><span class="quick-icon">W</span>Word</button>
+              <button class="quick" onclick="openProgram('teams')"><span class="quick-icon">T</span>Teams</button>
+              <button class="quick" onclick="openProgram('power bi')"><span class="quick-icon">▥</span>Power BI</button>
+              <button class="quick" onclick="showSection('assistant')"><span class="quick-icon">✦</span>WorkMate</button>
+            </div>
+          </div>
+
+          <div class="card panel">
+            <div class="panel-title">
+              <h2>Alert</h2>
+              <span class="smalltext">Ultimi avvisi</span>
+            </div>
+            <div id="alerts"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMAIL -->
+    <section id="email" class="section">
+      <div class="topbar">
+        <div><div class="eyebrow">Outlook</div><h1>Email</h1><p class="subtitle">Controlla le priorità e prepara nuovi messaggi.</p></div>
+        <button class="btn primary" onclick="refreshMails()">↻ Aggiorna mail</button>
+      </div>
+      <div class="two-col">
+        <div class="card panel">
+          <div class="panel-title"><h2>Email recenti</h2><span id="emailCountLabel" class="smalltext"></span></div>
+          <div id="mailList" class="mail-list"></div>
+        </div>
+        <div class="card panel">
+          <div class="panel-title"><h2>Nuova email</h2><span class="badge info">Outlook</span></div>
+          <div class="form-grid">
+            <div class="full"><label>A</label><input id="mailTo" placeholder="nome.cognome@azienda.it"></div>
+            <div class="full"><label>CC</label><input id="mailCc" placeholder="Opzionale"></div>
+            <div class="full"><label>Oggetto</label><input id="mailSubject" placeholder="Oggetto della mail"></div>
+            <div class="full"><label>Messaggio</label><textarea id="mailBody" placeholder="Scrivi qui..."></textarea></div>
+            <button class="btn secondary" onclick="sendMail(false)">Apri bozza</button>
+            <button class="btn primary" onclick="sendMail(true)">Invia</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOLS -->
+    <section id="tools" class="section">
+      <div class="topbar">
+        <div><div class="eyebrow">Workspace</div><h1>Strumenti</h1><p class="subtitle">Apri le applicazioni e prepara un messaggio Teams.</p></div>
+      </div>
+      <div class="two-col">
+        <div class="card panel">
+          <div class="panel-title"><h2>Apri un programma</h2></div>
+          <div class="quick-grid">
+            <button class="quick" onclick="openProgram('outlook')"><span class="quick-icon">✉</span>Outlook</button>
+            <button class="quick" onclick="openProgram('excel')"><span class="quick-icon">▦</span>Excel</button>
+            <button class="quick" onclick="openProgram('word')"><span class="quick-icon">W</span>Word</button>
+            <button class="quick" onclick="openProgram('powerpoint')"><span class="quick-icon">P</span>PowerPoint</button>
+            <button class="quick" onclick="openProgram('teams')"><span class="quick-icon">T</span>Teams</button>
+            <button class="quick" onclick="openProgram('power bi')"><span class="quick-icon">▥</span>Power BI</button>
+          </div>
+        </div>
+        <div class="card panel">
+          <div class="panel-title"><h2>Messaggio Teams</h2><span class="badge info">Teams</span></div>
+          <label>Destinatario</label>
+          <input id="teamsTo" placeholder="nome.cognome@azienda.it">
+          <label style="margin-top:12px">Messaggio</label>
+          <textarea id="teamsMessage" placeholder="Scrivi il messaggio..."></textarea>
+          <label style="display:flex;gap:8px;align-items:center;margin:11px 0">
+            <input id="teamsAuto" type="checkbox" style="width:auto"> Prova invio automatico con Invio
+          </label>
+          <button class="btn primary" onclick="sendTeams()">Apri Teams</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- POWER BI -->
+    <section id="powerbi" class="section">
+      <div class="topbar">
+        <div>
+          <div class="eyebrow">Data assistant</div>
+          <h1>YourReport</h1>
+          <p class="subtitle">Fai domande direttamente al modello Power BI aperto.</p>
+        </div>
+        <div class="actions">
+          <button class="btn secondary" onclick="connectPowerBIDesktop()">⛓ Connetti</button>
+          <button class="btn primary" onclick="loadPbiMetadata()">↻ Scansiona modello</button>
+        </div>
+      </div>
+
+      <div class="pbi-shell">
+        <div class="card panel">
+          <div id="pbiDesktopStatus" class="connection-banner">
+            <div class="conn-left">
+              <div id="pbiConnIcon" class="conn-icon">BI</div>
+              <div>
+                <div id="pbiConnTitle" class="conn-title">Power BI non ancora collegato</div>
+                <div id="pbiConnSub" class="conn-sub">Apri “YourReport” in Power BI Desktop.</div>
+              </div>
+            </div>
+            <span id="pbiConnBadge" class="badge warn">OFFLINE</span>
+          </div>
+
+          <div class="panel-title">
+            <div><h2>Chiedi ai dati</h2><div class="smalltext">WorkMate legge tabelle, colonne e misure direttamente dal modello aperto.</div></div>
+          </div>
+
+          <div class="question-box">
+            <textarea id="pbiQuestion" placeholder="Scrivi la tua domanda sul report..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();askPowerBI()}"></textarea>
+            <div class="question-actions">
+              <span class="smalltext">Invio per chiedere · Shift+Invio per andare a capo</span>
+              <button class="btn primary" onclick="askPowerBI()">Chiedi →</button>
+            </div>
+          </div>
+
+          <div class="suggestions">
+            <button class="chip" onclick="usePbiQuestion('Quali misure ci sono?')">Quali misure ci sono?</button>
+            <button class="chip" onclick="usePbiQuestion('Quanti ODL devo ancora eseguire?')">ODL da eseguire</button>
+            <button class="chip" onclick="usePbiQuestion('Qual è la percentuale di eseguiti?')">% eseguiti</button>
+            <button class="chip" onclick="usePbiQuestion('Quanti NEG ci sono?')">NEG</button>
+            <button class="chip" onclick="usePbiQuestion('Mostrami le attività per comune')">Per comune</button>
+            <button class="chip" onclick="usePbiQuestion('Mostrami i dati per calibro')">Per calibro</button>
+          </div>
+
+          <div id="pbiAnswer" class="answer empty">La risposta di WorkMate comparirà qui.</div>
+          <div id="pbiAnswerTable" class="tablewrap" style="display:none"></div>
+
+          <details>
+            <summary>DAX avanzato</summary>
+            <textarea id="pbiDax" style="margin-top:10px" placeholder="EVALUATE ..."></textarea>
+            <button class="btn secondary small" style="margin-top:8px" onclick="runManualDax()">Esegui DAX</button>
+          </details>
+        </div>
+
+        <div class="stack">
+          <div class="card panel">
+            <div class="panel-title"><h2>Modello rilevato</h2><span id="pbiModelBadge" class="badge info">Non scansionato</span></div>
+            <div class="model-stats">
+              <div class="mini-stat"><span class="smalltext">Tabelle</span><strong id="pbiTableCount">—</strong></div>
+              <div class="mini-stat"><span class="smalltext">Colonne</span><strong id="pbiColumnCount">—</strong></div>
+              <div class="mini-stat"><span class="smalltext">Misure</span><strong id="pbiMeasureCount">—</strong></div>
+            </div>
+            <div id="pbiModelList" class="model-list">
+              <div class="muted" style="font-size:12px">Collegati e scansiona il modello per visualizzare gli oggetti disponibili.</div>
+            </div>
+          </div>
+
+          <div class="card panel">
+            <div class="panel-title"><h2>Come usarlo</h2></div>
+            <div class="smalltext" style="line-height:1.65">
+              WorkMate cerca prima una <b>misura DAX esistente</b>. Se la domanda riguarda una suddivisione,
+              prova a riconoscere la colonna corretta. Se la richiesta è ambigua, non inventa il risultato:
+              ti mostra gli oggetti più simili trovati nel modello.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ASSISTANT -->
+    <section id="assistant" class="section">
+      <div class="topbar">
+        <div><div class="eyebrow">Conversazione</div><h1>Parla con WorkMate</h1><p class="subtitle">Scrivi normalmente: tollera anche piccoli errori di battitura.</p></div>
+      </div>
+
+      <div class="card panel chatbox">
+        <div class="chathead">
+          <div><b>WorkMate AI</b><div class="smalltext">Assistente locale</div></div>
+          <div class="suggestions" style="margin:0">
+            <button class="chip" onclick="assistantSuggestion('Controlla le mail')">Controlla mail</button>
+            <button class="chip" onclick="assistantSuggestion('Apri Excel')">Apri Excel</button>
+            <button class="chip" onclick="assistantSuggestion('Quanti NEG ci sono nel report Power BI?')">Chiedi a Power BI</button>
+          </div>
+        </div>
+        <div id="chatlog" class="chatlog">
+          <div class="msg assistant">Ciao {{ config.user_name }}. Posso controllare Outlook, aprire i programmi, preparare messaggi e interrogare Power BI.</div>
+        </div>
+        <div class="chat-input">
+          <input id="chatInput" placeholder="Scrivi una richiesta..." onkeydown="if(event.key==='Enter') askAssistant()">
+          <button class="btn primary" onclick="askAssistant()">Invia</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settings" class="section">
+      <div class="topbar">
+        <div><div class="eyebrow">Configurazione</div><h1>Impostazioni</h1><p class="subtitle">Personalizza WorkMate senza modificare il codice.</p></div>
+      </div>
+      <div class="two-col">
+        <div class="card panel">
+          <div class="panel-title"><h2>Generale</h2></div>
+          <div class="form-grid">
+            <div><label>Nome utente</label><input id="cfgUser" value="{{ config.user_name }}"></div>
+            <div><label>Ore mail da controllare</label><input id="cfgHours" type="number" value="{{ config.mail_hours_back }}"></div>
+            <div><label>Numero massimo email</label><input id="cfgMax" type="number" value="{{ config.max_emails }}"></div>
+            <div><label>Teams · attesa invio automatico</label><input id="cfgTeamsDelay" type="number" step="0.5" value="{{ config.teams.send_delay_seconds }}"></div>
+          </div>
+        </div>
+        <div class="card panel">
+          <div class="panel-title"><h2>Power BI Desktop</h2><span class="badge info">DAX Studio</span></div>
+          <label>Nome report</label>
+          <input id="cfgReportName" value="{{ config.powerbi_desktop.report_name }}">
+          <div class="smalltext" style="margin-top:9px">
+            Il file deve essere aperto in Power BI Desktop quando WorkMate prova a collegarsi.
+          </div>
+          <button class="btn primary" style="margin-top:16px" onclick="saveSettings()">Salva impostazioni</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="busyOverlay" class="busy-overlay"><div class="loader"></div></div>
+
+<script>
+let lastEmails=[];
+let pbiMetadata=null;
+
+function $(id){return document.getElementById(id)}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+
+function showSection(id){
+  document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+  $(id).classList.add('active');
+  document.querySelector(`.nav button[data-section="${id}"]`)?.classList.add('active');
+}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showSection(b.dataset.section)));
+
+async function api(url,options={}){
+  const r=await fetch(url,{headers:{'Content-Type':'application/json'},...options});
+  let data={};
+  try{data=await r.json()}catch(e){throw new Error(`Risposta non valida dal server (${r.status})`)}
+  if(!r.ok || data.ok===false) throw new Error(data.error||`Errore HTTP ${r.status}`);
+  return data;
+}
+
+function toast(message){
+  const t=$('toast');t.textContent=message;t.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
+}
+function setBusy(on){$('busyOverlay').classList.toggle('show',!!on)}
+
+async function refreshMails(){
+  setBusy(true);
+  try{
+    const d=await api('/api/mails/refresh',{method:'POST',body:'{}'});
+    lastEmails=d.emails||[];
+    renderSummary(d.summary);
+    renderMails(lastEmails);
+    $('homeMailOrb').classList.add('on');
+    $('homeMailStatus').textContent='Aggiornato';
+    $('homeMailStatus').className='badge ok';
+    $('homeMailSub').textContent=`${d.summary.unread} non lette · ${d.summary.priority} prioritarie`;
+    if(d.summary.priority>0) browserNotify('WorkMate AI',`${d.summary.priority} email prioritarie da controllare.`);
+  }catch(e){
+    $('briefText').textContent='Non riesco ad aggiornare Outlook: '+e.message;
+    $('homeMailStatus').textContent='Errore';
+    $('homeMailStatus').className='badge danger';
+  }finally{setBusy(false)}
+}
+
+function renderSummary(s){
+  $('kTotal').textContent=s.total;
+  $('kUnread').textContent=s.unread;
+  $('kPriority').textContent=s.priority;
+  $('lastCheck').textContent=s.generated_at;
+  $('briefText').textContent=`Ho trovato ${s.total} email nel periodo: ${s.unread} non lette e ${s.priority} prioritarie.`;
+  const box=$('priorityList');box.innerHTML='';
+  (s.top_priority||[]).forEach(m=>{
+    box.innerHTML+=`<div class="mail">
+      <div class="row"><b>${esc(m.subject)}</b><span class="badge warn">Priorità ${m.priority_score}</span></div>
+      <small>${esc(m.sender)} · ${esc(m.received)}</small>
+      <div class="snippet">${esc(m.snippet)}</div>
+    </div>`;
+  });
+  if(!(s.top_priority||[]).length)box.innerHTML='<div class="muted" style="font-size:12px">Nessuna email ad alta priorità rilevata.</div>';
+}
+function renderMails(items){
+  $('emailCountLabel').textContent=items.length?`${items.length} messaggi`:'';
+  const box=$('mailList');box.innerHTML='';
+  items.forEach(m=>{
+    const badge=m.unread?'<span class="badge danger">Non letta</span>':'<span class="badge ok">Letta</span>';
+    box.innerHTML+=`<div class="mail">
+      <div class="row"><b>${esc(m.subject)}</b>${badge}</div>
+      <small>${esc(m.sender)} · ${esc(m.received)}</small>
+      <div class="snippet">${esc(m.snippet)}</div>
+    </div>`;
+  });
+  if(!items.length)box.innerHTML='<div class="muted" style="font-size:12px">Nessuna email caricata.</div>';
+}
+
+async function sendMail(sendNow){
+  const payload={to:$('mailTo').value,cc:$('mailCc').value,subject:$('mailSubject').value,body:$('mailBody').value,send_now:sendNow};
+  try{
+    setBusy(true);
+    const d=await api('/api/email/send',{method:'POST',body:JSON.stringify(payload)});
+    toast(d.message);
+  }catch(e){toast('Errore: '+e.message)}
+  finally{setBusy(false)}
+}
+async function openProgram(program){
+  try{
+    await api('/api/program/open',{method:'POST',body:JSON.stringify({program})});
+    toast(`${program} avviato.`);
+  }catch(e){toast('Errore: '+e.message)}
+}
+async function sendTeams(){
+  try{
+    setBusy(true);
+    const d=await api('/api/teams/send',{method:'POST',body:JSON.stringify({
+      recipient:$('teamsTo').value,message:$('teamsMessage').value,auto_send:$('teamsAuto').checked
+    })});
+    toast(d.message);
+  }catch(e){toast('Errore: '+e.message)}
+  finally{setBusy(false)}
+}
+
+/* POWER BI */
+function setPbiOnline(name='YourReport'){
+  $('homePbiOrb').classList.add('on');
+  $('homePbiStatus').textContent='Collegato';
+  $('homePbiStatus').className='badge ok';
+  $('homePbiSub').textContent=name;
+  $('sidePbiDot').classList.add('on');
+  $('sidePbiText').textContent='Power BI collegato';
+  $('pbiConnTitle').textContent='Power BI collegato';
+  $('pbiConnSub').textContent=name;
+  $('pbiConnBadge').textContent='ONLINE';
+  $('pbiConnBadge').className='badge ok';
+  $('pbiConnIcon').style.background='#e8f8f1';
+  $('pbiConnIcon').style.color='#17754e';
+}
+function setPbiOffline(message='Apri il report in Power BI Desktop.'){
+  $('homePbiOrb').classList.remove('on');
+  $('homePbiStatus').textContent='Non collegato';
+  $('homePbiStatus').className='badge warn';
+  $('sidePbiDot').classList.remove('on');
+  $('sidePbiText').textContent='Power BI non collegato';
+  $('pbiConnTitle').textContent='Power BI non collegato';
+  $('pbiConnSub').textContent=message;
+  $('pbiConnBadge').textContent='OFFLINE';
+  $('pbiConnBadge').className='badge warn';
+}
+
+async function connectPowerBIDesktop(){
+  $('pbiConnTitle').textContent='Connessione in corso...';
+  $('pbiConnSub').textContent='WorkMate sta cercando il report tramite DAX Studio.';
+  setBusy(true);
+  try{
+    const d=await api('/api/powerbi-desktop/connect',{method:'POST',body:'{}'});
+    const x=d.data;
+    setPbiOnline(x.database||x.report_name||'YourReport');
+    $('pbiTableCount').textContent=x.table_count??'—';
+    $('pbiMeasureCount').textContent=x.measure_count??'—';
+    toast('Power BI collegato.');
+    await loadPbiMetadata();
+  }catch(e){
+    setPbiOffline(e.message);
+    toast('Power BI: '+e.message);
+  }finally{setBusy(false)}
+}
+async function loadPbiMetadata(){
+  $('pbiModelBadge').textContent='Scansione...';
+  $('pbiModelBadge').className='badge info';
+  try{
+    const d=await api('/api/powerbi-desktop/metadata');
+    pbiMetadata=d.metadata;
+    const tables=(pbiMetadata.tables||[]).filter(x=>!x.hidden);
+    const columns=(pbiMetadata.columns||[]).filter(x=>!x.hidden);
+    const measures=(pbiMetadata.measures||[]).filter(x=>!x.hidden);
+    $('pbiTableCount').textContent=tables.length;
+    $('pbiColumnCount').textContent=columns.length;
+    $('pbiMeasureCount').textContent=measures.length;
+    if(!tables.length){
+      throw new Error('Il report è collegato, ma la struttura del modello risulta vuota.');
+    }
+    $('pbiModelBadge').textContent='Pronto';
+    $('pbiModelBadge').className='badge ok';
+    setPbiOnline(d.database||'YourReport');
+    renderModel(tables,columns,measures);
+  }catch(e){
+    $('pbiModelBadge').textContent='Errore';
+    $('pbiModelBadge').className='badge danger';
+    $('pbiModelList').innerHTML=`<div class="smalltext">${esc(e.message)}</div>`;
+  }
+}
+function renderModel(tables,columns,measures){
+  const tableNames=tables.slice(0,25).map(x=>`<span class="model-pill">${esc(x.name)}</span>`).join('');
+  const measureNames=measures.slice(0,30).map(x=>`<span class="model-pill">${esc(x.name)}</span>`).join('');
+  $('pbiModelList').innerHTML=`
+    <div class="model-group"><div class="model-group-title">Tabelle</div>${tableNames||'<span class="smalltext">Nessuna</span>'}</div>
+    <div class="model-group"><div class="model-group-title">Misure</div>${measureNames||'<span class="smalltext">Nessuna</span>'}</div>`;
+}
+function usePbiQuestion(q){$('pbiQuestion').value=q;$('pbiQuestion').focus()}
+async function askPowerBI(){
+  const q=$('pbiQuestion').value.trim();if(!q)return;
+  $('pbiAnswer').classList.remove('empty');
+  $('pbiAnswer').textContent='Sto interrogando il modello...';
+  $('pbiAnswerTable').style.display='none';
+  try{
+    const d=await api('/api/powerbi-desktop/ask',{method:'POST',body:JSON.stringify({question:q})});
+    const a=d.answer;
+    let text=a.reply||'';
+    if(a.text_result)text+='\n\n'+a.text_result;
+    $('pbiAnswer').textContent=text||'Query completata.';
+    const rows=a.rows||[];
+    renderTableInto('pbiAnswerTable',rows);
+  }catch(e){
+    $('pbiAnswer').textContent='Errore: '+e.message;
+  }
+}
+async function runManualDax(){
+  const dax=$('pbiDax').value.trim();if(!dax)return;
+  $('pbiAnswer').classList.remove('empty');
+  $('pbiAnswer').textContent='Esecuzione DAX...';
+  try{
+    const d=await api('/api/powerbi-desktop/query',{method:'POST',body:JSON.stringify({dax})});
+    $('pbiAnswer').textContent=`Query completata · ${d.data.row_count} righe`;
+    renderTableInto('pbiAnswerTable',d.data.rows||[]);
+  }catch(e){$('pbiAnswer').textContent='Errore: '+e.message}
+}
+function renderTableInto(id,rows){
+  const box=$(id);
+  if(!rows||!rows.length){box.innerHTML='';box.style.display='none';return}
+  const cols=Object.keys(rows[0]);
+  let h='<table><thead><tr>'+cols.map(c=>`<th>${esc(c)}</th>`).join('')+'</tr></thead><tbody>';
+  h+=rows.slice(0,100).map(r=>'<tr>'+cols.map(c=>`<td>${esc(r[c]??'')}</td>`).join('')+'</tr>').join('');
+  h+='</tbody></table>';
+  box.innerHTML=h;box.style.display='block';
+}
+
+/* GENERAL ASSISTANT */
+function assistantSuggestion(text){showSection('assistant');$('chatInput').value=text;$('chatInput').focus()}
+async function askAssistant(){
+  const input=$('chatInput');const text=input.value.trim();if(!text)return;
+  appendMsg('user',text);input.value='';
+  try{
+    const d=await api('/api/assistant',{method:'POST',body:JSON.stringify({text})});
+    appendMsg('assistant',d.reply||'Operazione completata.');
+    if(d.summary){renderSummary(d.summary);renderMails(lastEmails)}
+    if(d.powerbi_answer){
+      const a=d.powerbi_answer;
+      if(a.rows?.length){
+        showSection('powerbi');
+        $('pbiQuestion').value=text;
+        $('pbiAnswer').classList.remove('empty');
+        $('pbiAnswer').textContent=(a.reply||'')+(a.text_result?'\n\n'+a.text_result:'');
+        renderTableInto('pbiAnswerTable',a.rows);
+      }
+    }
+  }catch(e){appendMsg('assistant','Errore: '+e.message)}
+}
+function appendMsg(role,text){
+  const box=$('chatlog');
+  box.insertAdjacentHTML('beforeend',`<div class="msg ${role}">${esc(text)}</div>`);
+  box.scrollTop=box.scrollHeight;
+}
+async function askFromHome(){
+  const q=$('homeAsk').value.trim();if(!q)return;
+  $('homeAsk').value='';
+  showSection('assistant');
+  appendMsg('user',q);
+  try{
+    const d=await api('/api/assistant',{method:'POST',body:JSON.stringify({text:q})});
+    appendMsg('assistant',d.reply||'Operazione completata.');
+    if(d.summary)renderSummary(d.summary);
+    if(d.powerbi_answer?.rows?.length){
+      showSection('powerbi');
+      $('pbiQuestion').value=q;
+      const a=d.powerbi_answer;
+      $('pbiAnswer').classList.remove('empty');
+      $('pbiAnswer').textContent=(a.reply||'')+(a.text_result?'\n\n'+a.text_result:'');
+      renderTableInto('pbiAnswerTable',a.rows);
+    }
+  }catch(e){appendMsg('assistant','Errore: '+e.message)}
+}
+
+async function saveSettings(){
+  const payload={
+    user_name:$('cfgUser').value,
+    mail_hours_back:Number($('cfgHours').value),
+    max_emails:Number($('cfgMax').value),
+    teams:{send_delay_seconds:Number($('cfgTeamsDelay').value)},
+    powerbi_desktop:{report_name:$('cfgReportName').value}
+  };
+  try{
+    await api('/api/config',{method:'POST',body:JSON.stringify(payload)});
+    toast('Impostazioni salvate.');
+  }catch(e){toast('Errore: '+e.message)}
+}
+
+async function pollStatus(){
+  try{
+    const d=await api('/api/status');
+    $('kAlerts').textContent=(d.alerts||[]).length;
+    renderAlerts(d.alerts||[]);
+    if(d.powerbi_desktop?.connected)setPbiOnline(d.powerbi_desktop.database||'YourReport');
+  }catch(e){}
+}
+function renderAlerts(items){
+  const box=$('alerts');box.innerHTML='';
+  items.slice(0,5).forEach(a=>{
+    box.innerHTML+=`<div class="alertbox ${esc(a.level)}"><b>${esc(a.title)}</b><div style="margin-top:3px">${esc(a.message)}</div><div class="smalltext" style="margin-top:4px">${esc(a.time)}</div></div>`;
+  });
+  if(!items.length)box.innerHTML='<div class="muted" style="font-size:12px">Nessun alert attivo.</div>';
+}
+
+function notifyMe(){
+  if('Notification' in window)Notification.requestPermission().then(()=>toast('Preferenza notifiche aggiornata.'));
+}
+function browserNotify(title,body){
+  if('Notification' in window&&Notification.permission==='granted')new Notification(title,{body});
+}
+
+/* Startup */
+pollStatus();
+setInterval(pollStatus,4000);
+setTimeout(refreshMails,800);
+</script>
+</body>
+</html>
