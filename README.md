@@ -2,7 +2,6 @@
 
 > A local-first work assistant built with **Python + Flask** that connects Outlook, Microsoft Office, Teams and Power BI Desktop in one interactive dashboard.
 
-![WorkMate AI](docs/cover.png)
 
 ## Why I built it
 
@@ -41,29 +40,15 @@ The project started as a learning exercise in Python and gradually evolved into 
 
 ## Screenshots
 
-### Home dashboard
+The local application includes dedicated views for:
 
-![Home dashboard](docs/screenshots/01-home.png)
+- Home / Morning Brief
+- Outlook email review and composer
+- Office and Teams tools
+- Power BI model exploration and DAX queries
+- Interactive assistant
 
-### Outlook integration
-
-Real email contents are intentionally redacted in the public repository.
-
-![Outlook integration](docs/screenshots/02-email.png)
-
-### Office and Teams tools
-
-![Tools](docs/screenshots/03-tools.png)
-
-### Power BI assistant
-
-Operational values and model object names are redacted from the public screenshot.
-
-![Power BI integration](docs/screenshots/04-powerbi.png)
-
-### Assistant chat
-
-![Assistant](docs/screenshots/05-assistant.png)
+Real company data and mailbox contents are intentionally excluded from the public repository.
 
 ## Architecture
 
