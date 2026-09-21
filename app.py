@@ -416,7 +416,7 @@ def answer_powerbi(question):
             "EVALUATE\nTOPN(30,\n"
             "SUMMARIZECOLUMNS(\n"
             f"    '{table}'[{col}],\n"
-            f'    "Count", COUNTROWS(\\'{table}\\')\n'
+            f"    \"Count\", COUNTROWS('{table}')\n"
             "),\n[Count], DESC\n)"
         )
         result = execute_dax(query)
