@@ -1,0 +1,34 @@
+{
+  "assistant_name": "WorkMate AI",
+  "user_name": "User",
+  "mail_hours_back": 16,
+  "max_emails": 40,
+  "priority_keywords": [
+    "urgent",
+    "deadline",
+    "important",
+    "error",
+    "issue",
+    "delay",
+    "today"
+  ],
+  "teams": {
+    "auto_send": false,
+    "send_delay_seconds": 3.0
+  },
+  "powerbi_desktop": {
+    "report_name": "YourReport",
+    "port": "",
+    "database": "",
+    "auto_connect": true
+  },
+  "powerbi": {
+    "mode": "local_file",
+    "local_file": "",
+    "sheet_name": "",
+    "tenant_id": "",
+    "client_id": "",
+    "dataset_id": "",
+    "dax_query": ""
+  }
+}
